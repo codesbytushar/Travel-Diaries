@@ -1,0 +1,41 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/tripTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/trip_title"
+        android:inputType="text"
+        android:autofillHints="name"
+        android:minHeight="48dp"
+        android:padding="12dp"
+        />
+
+    <EditText
+        android:id="@+id/tripDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/about_trip"
+        android:inputType="textMultiLine"
+        android:autofillHints="none"
+        android:minHeight="48dp"
+        android:padding="12dp"
+        />
+
+    <Button
+        android:id="@+id/selectPhotosBtn"
+        android:text="@string/select_photos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/saveTripBtn"
+        android:text="@string/save_trip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
