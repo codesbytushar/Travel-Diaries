@@ -7,6 +7,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.traveldiaries.adapter.SelectedImageAdapter;
 
 import java.util.ArrayList;
 
@@ -14,7 +18,10 @@ public class AddTripActivity extends AppCompatActivity {
 
     EditText titleEdt, descEdt;
     Button selectPhotosBtn, saveTripBtn;
+    RecyclerView selectedImagesRecycler;
+
     ArrayList<Uri> selectedImages = new ArrayList<>();
+    SelectedImageAdapter imageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,37 +32,32 @@ public class AddTripActivity extends AppCompatActivity {
         descEdt = findViewById(R.id.tripDesc);
         selectPhotosBtn = findViewById(R.id.selectPhotosBtn);
         saveTripBtn = findViewById(R.id.saveTripBtn);
+        selectedImagesRecycler = findViewById(R.id.selectedImagesRecycler);
 
-        // Open image picker
+        imageAdapter = new SelectedImageAdapter(selectedImages);
+        selectedImagesRecycler.setLayoutManager(new GridLayoutManager(this, 3));
+        selectedImagesRecycler.setAdapter(imageAdapter);
+
         selectPhotosBtn.setOnClickListener(v -> {
-
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.setType("image/*");
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-
-            // REQUIRED FLAGS
-            intent.addFlags(
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION |
-                            Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
-            );
-
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
             startActivityForResult(intent, 100);
         });
 
-        // Save trip
         saveTripBtn.setOnClickListener(v -> {
+            Intent result = new Intent();
+            result.putExtra("title", titleEdt.getText().toString());
+            result.putExtra("description", descEdt.getText().toString());
 
-            Intent intent = new Intent();
-            intent.putExtra("title", titleEdt.getText().toString());
-            intent.putExtra("description", descEdt.getText().toString());
-
-            ArrayList<String> imageUris = new ArrayList<>();
+            ArrayList<String> images = new ArrayList<>();
             for (Uri uri : selectedImages) {
-                imageUris.add(uri.toString());
+                images.add(uri.toString());
             }
 
-            intent.putStringArrayListExtra("images", imageUris);
-            setResult(RESULT_OK, intent);
+            result.putStringArrayListExtra("images", images);
+            setResult(RESULT_OK, result);
             finish();
         });
     }
@@ -67,32 +69,18 @@ public class AddTripActivity extends AppCompatActivity {
         if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
 
             if (data.getClipData() != null) {
-                int count = data.getClipData().getItemCount();
-
-                for (int i = 0; i < count; i++) {
+                for (int i = 0; i < data.getClipData().getItemCount(); i++) {
                     Uri uri = data.getClipData().getItemAt(i).getUri();
-
-                    // PERSIST PERMISSION (CRITICAL LINE)
-                    getContentResolver().takePersistableUriPermission(
-                            uri,
-                            Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    );
-
+                    getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     selectedImages.add(uri);
                 }
-
             } else if (data.getData() != null) {
-
                 Uri uri = data.getData();
-
-                // PERSIST PERMISSION
-                getContentResolver().takePersistableUriPermission(
-                        uri,
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION
-                );
-
+                getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 selectedImages.add(uri);
             }
+
+            imageAdapter.notifyDataSetChanged();
         }
     }
 }

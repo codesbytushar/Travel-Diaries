@@ -10,6 +10,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.traveldiaries.adapter.ImageSliderAdapter;
 
 import java.util.ArrayList;
+import com.google.android.material.appbar.MaterialToolbar;
 
 public class TripDetailsActivity extends AppCompatActivity {
 
@@ -40,5 +41,9 @@ public class TripDetailsActivity extends AppCompatActivity {
 
         ImageSliderAdapter adapter = new ImageSliderAdapter(imageUris);
         imageSlider.setAdapter(adapter);
+
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar.setNavigationOnClickListener(v -> finish());
+
     }
 }

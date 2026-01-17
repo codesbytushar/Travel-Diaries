@@ -1,41 +1,106 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="20dp"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:fillViewport="true">
 
-    <EditText
-        android:id="@+id/tripTitle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/trip_title"
-        android:inputType="text"
-        android:autofillHints="name"
-        android:minHeight="48dp"
-        android:padding="12dp"
-        />
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center_horizontal">
 
-    <EditText
-        android:id="@+id/tripDesc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/about_trip"
-        android:inputType="textMultiLine"
-        android:autofillHints="none"
-        android:minHeight="48dp"
-        android:padding="12dp"
-        />
+        <!-- Card Container -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:background="@drawable/bg_form_card">
 
-    <Button
-        android:id="@+id/selectPhotosBtn"
-        android:text="@string/select_photos"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+            <!-- Heading -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add New Trip"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#212121" />
 
-    <Button
-        android:id="@+id/saveTripBtn"
-        android:text="@string/save_trip"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-</LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="16dp" />
+
+            <!-- Trip Title -->
+            <EditText
+                android:id="@+id/tripTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/trip_title"
+                android:inputType="text"
+                android:minHeight="48dp"
+                android:padding="12dp"
+                android:background="@drawable/bg_input"
+                android:autofillHints="name" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="12dp" />
+
+            <!-- Trip Description -->
+            <EditText
+                android:id="@+id/tripDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/about_trip"
+                android:inputType="textMultiLine"
+                android:minLines="4"
+                android:padding="12dp"
+                android:background="@drawable/bg_input"
+                android:autofillHints="none" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <!-- Select Photos Button -->
+            <Button
+                android:id="@+id/selectPhotosBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/select_photos"
+                android:minHeight="48dp"
+                android:backgroundTint="#E0E0E0"
+                android:textColor="#000000" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="12dp" />
+
+            <!-- 📸 Selected Images Preview Grid -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/selectedImagesRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <!-- Save Trip Button -->
+            <Button
+                android:id="@+id/saveTripBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/save_trip"
+                android:minHeight="48dp"
+                android:backgroundTint="#1976D2"
+                android:textColor="#FFFFFF" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
