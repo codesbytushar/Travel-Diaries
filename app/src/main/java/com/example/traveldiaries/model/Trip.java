@@ -7,7 +7,7 @@ public class Trip implements Serializable {
 
     private String title;
     private String description;
-    private ArrayList<String> imagePaths; // internal file paths
+    private ArrayList<String> imagePaths;
 
     public Trip(String title, String description, ArrayList<String> imagePaths) {
         this.title = title;

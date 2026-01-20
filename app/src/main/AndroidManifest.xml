@@ -23,7 +23,6 @@
             android:name=".AddTripActivity"
             android:exported="false" />
 
-        <!-- 🔥 THIS FIXES THE CRASH -->
         <activity
             android:name=".TripDetailsActivity"
             android:exported="false" />

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.traveldiaries.adapter.TripAdapter;
 import com.example.traveldiaries.model.Trip;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -31,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        setSupportActionBar(toolbar);
+
         recyclerView = findViewById(R.id.tripsRecyclerView);
         addTripFab = findViewById(R.id.addTripFab);
 
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
                         new Intent(this, AddTripActivity.class), 1
                 )
         );
+
     }
 
     @Override
@@ -120,17 +125,14 @@ public class MainActivity extends AppCompatActivity {
         try {
             Trip trip = tripList.get(position);
 
-            // 🗑 Delete images from storage
             for (String path : trip.getImagePaths()) {
                 File file = new File(path);
                 if (file.exists()) file.delete();
             }
 
-            // 🗑 Remove trip
             tripList.remove(position);
             adapter.notifyItemRemoved(position);
 
-            // 💾 Update JSON
             saveTripsToFile();
 
         } catch (Exception e) {

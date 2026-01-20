@@ -25,7 +25,6 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
     ArrayList<Trip> trips;
     DeleteListener deleteListener;
 
-    // 🔴 Interface for delete callback
     public interface DeleteListener {
         void onDelete(int position);
     }
@@ -57,7 +56,6 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
                     .into(holder.image);
         }
 
-        // Open details
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, TripDetailsActivity.class);
             intent.putExtra("title", trip.getTitle());
@@ -66,7 +64,6 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
             context.startActivity(intent);
         });
 
-        // DELETE CLICK
         holder.deleteBtn.setOnClickListener(v -> {
             if (deleteListener != null) {
                 deleteListener.onDelete(position);
