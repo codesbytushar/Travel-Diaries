@@ -52,22 +52,22 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
 
         // Card click → open TripDetailsActivity
         holder.itemView.setOnClickListener(v -> {
+            if (trip == null) return;
 
             Intent intent = new Intent(context, TripDetailsActivity.class);
-
             intent.putExtra("title", trip.getTitle());
             intent.putExtra("description", trip.getDescription());
 
             ArrayList<String> imageStrings = new ArrayList<>();
-
-            if (trip.getImages() != null && !trip.getImages().isEmpty()) {
+            if (trip.getImages() != null) {
                 for (Uri uri : trip.getImages()) {
-                    imageStrings.add(uri.toString());
+                    if (uri != null) {
+                        imageStrings.add(uri.toString());
+                    }
                 }
             }
 
             intent.putStringArrayListExtra("images", imageStrings);
-
             context.startActivity(intent);
         });
     }

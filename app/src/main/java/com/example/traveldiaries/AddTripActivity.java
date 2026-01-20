@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +26,9 @@ public class AddTripActivity extends AppCompatActivity {
     ArrayList<Uri> selectedImages = new ArrayList<>();
     SelectedImageAdapter imageAdapter;
 
+    // ✅ CORRECT TYPE
+    ActivityResultLauncher<PickVisualMediaRequest> pickImagesLauncher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,53 +40,45 @@ public class AddTripActivity extends AppCompatActivity {
         saveTripBtn = findViewById(R.id.saveTripBtn);
         selectedImagesRecycler = findViewById(R.id.selectedImagesRecycler);
 
+        // RecyclerView setup
         imageAdapter = new SelectedImageAdapter(selectedImages);
         selectedImagesRecycler.setLayoutManager(new GridLayoutManager(this, 3));
         selectedImagesRecycler.setAdapter(imageAdapter);
 
+        // ✅ REGISTER PHOTO PICKER (CORRECT)
+        pickImagesLauncher = registerForActivityResult(
+                new ActivityResultContracts.PickMultipleVisualMedia(),
+                uris -> {
+                    if (uris != null && !uris.isEmpty()) {
+                        selectedImages.addAll(uris);
+                        imageAdapter.notifyDataSetChanged();
+                    }
+                }
+        );
+
+        // 📸 Open image picker
         selectPhotosBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.setType("image/*");
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-            startActivityForResult(intent, 100);
+            pickImagesLauncher.launch(
+                    new PickVisualMediaRequest.Builder()
+                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                            .build()
+            );
         });
 
+        // 💾 Save trip
         saveTripBtn.setOnClickListener(v -> {
             Intent result = new Intent();
-            result.putExtra("title", titleEdt.getText().toString());
-            result.putExtra("description", descEdt.getText().toString());
+            result.putExtra("title", titleEdt.getText().toString().trim());
+            result.putExtra("description", descEdt.getText().toString().trim());
 
-            ArrayList<String> images = new ArrayList<>();
+            ArrayList<String> imageStrings = new ArrayList<>();
             for (Uri uri : selectedImages) {
-                images.add(uri.toString());
+                imageStrings.add(uri.toString());
             }
 
-            result.putStringArrayListExtra("images", images);
+            result.putStringArrayListExtra("images", imageStrings);
             setResult(RESULT_OK, result);
             finish();
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
-
-            if (data.getClipData() != null) {
-                for (int i = 0; i < data.getClipData().getItemCount(); i++) {
-                    Uri uri = data.getClipData().getItemAt(i).getUri();
-                    getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    selectedImages.add(uri);
-                }
-            } else if (data.getData() != null) {
-                Uri uri = data.getData();
-                getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                selectedImages.add(uri);
-            }
-
-            imageAdapter.notifyDataSetChanged();
-        }
     }
 }
