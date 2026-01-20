@@ -4,20 +4,16 @@
     <style name="Theme.TravelDiaries"
         parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
-        <!-- Primary colors -->
         <item name="colorPrimary">@color/blue_primary</item>
         <item name="colorPrimaryVariant">@color/blue_dark</item>
         <item name="colorOnPrimary">@color/white</item>
 
-        <!-- Background -->
         <item name="android:windowBackground">@color/blue_light</item>
 
-        <!-- GLOBAL TEXT COLOR -->
         <item name="android:textColor">@color/text_black</item>
         <item name="android:textColorPrimary">@color/text_black</item>
         <item name="android:textColorSecondary">@color/text_black</item>
 
-        <!-- Status bar -->
         <item name="android:statusBarColor">@color/blue_dark</item>
 
     </style>
