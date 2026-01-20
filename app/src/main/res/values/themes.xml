@@ -9,12 +9,13 @@
         <item name="colorPrimaryVariant">@color/blue_dark</item>
         <item name="colorOnPrimary">@color/white</item>
 
-        <!-- Secondary -->
-        <item name="colorSecondary">@color/blue_primary</item>
-        <item name="colorOnSecondary">@color/white</item>
-
         <!-- Background -->
         <item name="android:windowBackground">@color/blue_light</item>
+
+        <!-- GLOBAL TEXT COLOR -->
+        <item name="android:textColor">@color/text_black</item>
+        <item name="android:textColorPrimary">@color/text_black</item>
+        <item name="android:textColorSecondary">@color/text_black</item>
 
         <!-- Status bar -->
         <item name="android:statusBarColor">@color/blue_dark</item>

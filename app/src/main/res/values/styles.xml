@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Safe EditText style (works with normal EditText) -->
+    <style name="WhiteEditText">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+    </style>
+
+</resources>
