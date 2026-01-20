@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.bumptech.glide.Glide;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,7 +48,11 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
         if (trip.getImages() != null && !trip.getImages().isEmpty()) {
             holder.image.setImageURI(trip.getImages().get(0));
         } else {
-            holder.image.setImageResource(R.drawable.ic_launcher_background);
+            Glide.with(context)
+                    .load(trip.getImages().get(0))
+                    .placeholder(R.drawable.bg_card)
+                    .into(holder.image);
+
         }
 
         // Card click → open TripDetailsActivity
