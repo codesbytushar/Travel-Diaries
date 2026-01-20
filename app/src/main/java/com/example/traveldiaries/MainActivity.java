@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         loadTripsFromFile();
 
-        adapter = new TripAdapter(this, tripList);
+        adapter = new TripAdapter(this, tripList, position -> deleteTrip(position));
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(adapter);
 
@@ -116,4 +116,26 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    private void deleteTrip(int position) {
+        try {
+            Trip trip = tripList.get(position);
+
+            // 🗑 Delete images from storage
+            for (String path : trip.getImagePaths()) {
+                File file = new File(path);
+                if (file.exists()) file.delete();
+            }
+
+            // 🗑 Remove trip
+            tripList.remove(position);
+            adapter.notifyItemRemoved(position);
+
+            // 💾 Update JSON
+            saveTripsToFile();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
