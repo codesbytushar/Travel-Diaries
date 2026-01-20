@@ -1,8 +1,6 @@
 package com.example.traveldiaries;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,39 +18,19 @@ public class TripDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_details);
 
-        ViewPager2 imageSlider = findViewById(R.id.imageSlider);
-        TextView titleText = findViewById(R.id.tripTitleText);
-        TextView descText = findViewById(R.id.tripDescText);
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar.setNavigationOnClickListener(v -> finish());
 
-        // 🔙 Safe back
-        if (toolbar != null) {
-            toolbar.setNavigationOnClickListener(v -> finish());
-        }
+        TextView title = findViewById(R.id.tripTitleText);
+        TextView desc = findViewById(R.id.tripDescText);
+        ViewPager2 slider = findViewById(R.id.imageSlider);
 
-        // 🔐 SAFE intent data
-        String title = getIntent().getStringExtra("title");
-        String description = getIntent().getStringExtra("description");
-        ArrayList<String> imageStrings =
+        title.setText(getIntent().getStringExtra("title"));
+        desc.setText(getIntent().getStringExtra("description"));
+
+        ArrayList<String> images =
                 getIntent().getStringArrayListExtra("images");
 
-        titleText.setText(title != null ? title : "");
-        descText.setText(description != null ? description : "");
-
-        ArrayList<Uri> imageUris = new ArrayList<>();
-        if (imageStrings != null) {
-            for (String s : imageStrings) {
-                if (s != null) {
-                    imageUris.add(Uri.parse(s));
-                }
-            }
-        }
-
-        // 🚫 Prevent ViewPager crash
-        if (imageUris.isEmpty()) {
-            imageSlider.setVisibility(View.GONE);
-        } else {
-            imageSlider.setAdapter(new ImageSliderAdapter(imageUris));
-        }
+        slider.setAdapter(new ImageSliderAdapter(images));
     }
 }

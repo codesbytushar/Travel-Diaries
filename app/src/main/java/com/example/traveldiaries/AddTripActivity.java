@@ -15,6 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.traveldiaries.adapter.SelectedImageAdapter;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class AddTripActivity extends AppCompatActivity {
@@ -26,7 +29,6 @@ public class AddTripActivity extends AppCompatActivity {
     ArrayList<Uri> selectedImages = new ArrayList<>();
     SelectedImageAdapter imageAdapter;
 
-    // ✅ CORRECT TYPE
     ActivityResultLauncher<PickVisualMediaRequest> pickImagesLauncher;
 
     @Override
@@ -40,45 +42,69 @@ public class AddTripActivity extends AppCompatActivity {
         saveTripBtn = findViewById(R.id.saveTripBtn);
         selectedImagesRecycler = findViewById(R.id.selectedImagesRecycler);
 
-        // RecyclerView setup
         imageAdapter = new SelectedImageAdapter(selectedImages);
         selectedImagesRecycler.setLayoutManager(new GridLayoutManager(this, 3));
         selectedImagesRecycler.setAdapter(imageAdapter);
 
-        // ✅ REGISTER PHOTO PICKER (CORRECT)
         pickImagesLauncher = registerForActivityResult(
                 new ActivityResultContracts.PickMultipleVisualMedia(),
                 uris -> {
-                    if (uris != null && !uris.isEmpty()) {
+                    if (uris != null) {
                         selectedImages.addAll(uris);
                         imageAdapter.notifyDataSetChanged();
                     }
                 }
         );
 
-        // 📸 Open image picker
-        selectPhotosBtn.setOnClickListener(v -> {
-            pickImagesLauncher.launch(
-                    new PickVisualMediaRequest.Builder()
-                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                            .build()
-            );
-        });
+        selectPhotosBtn.setOnClickListener(v ->
+                pickImagesLauncher.launch(
+                        new PickVisualMediaRequest.Builder()
+                                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                                .build()
+                )
+        );
 
-        // 💾 Save trip
         saveTripBtn.setOnClickListener(v -> {
-            Intent result = new Intent();
-            result.putExtra("title", titleEdt.getText().toString().trim());
-            result.putExtra("description", descEdt.getText().toString().trim());
+            ArrayList<String> savedPaths = new ArrayList<>();
 
-            ArrayList<String> imageStrings = new ArrayList<>();
             for (Uri uri : selectedImages) {
-                imageStrings.add(uri.toString());
+                String path = saveImageToInternalStorage(uri);
+                if (path != null) savedPaths.add(path);
             }
 
-            result.putStringArrayListExtra("images", imageStrings);
+            Intent result = new Intent();
+            result.putExtra("title", titleEdt.getText().toString());
+            result.putExtra("description", descEdt.getText().toString());
+            result.putStringArrayListExtra("images", savedPaths);
+
             setResult(RESULT_OK, result);
             finish();
         });
+    }
+
+    private String saveImageToInternalStorage(Uri uri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(uri);
+            File imagesDir = new File(getFilesDir(), "images");
+            if (!imagesDir.exists()) imagesDir.mkdir();
+
+            File imageFile = new File(imagesDir,
+                    "trip_" + System.currentTimeMillis() + ".jpg");
+
+            FileOutputStream fos = new FileOutputStream(imageFile);
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buffer)) > 0) {
+                fos.write(buffer, 0, len);
+            }
+
+            fos.close();
+            inputStream.close();
+            return imageFile.getAbsolutePath();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

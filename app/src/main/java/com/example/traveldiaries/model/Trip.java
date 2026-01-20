@@ -1,19 +1,18 @@
 package com.example.traveldiaries.model;
 
-import android.net.Uri;
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Trip implements Serializable {
 
-    private final String title;
-    private final String description;
-    private final ArrayList<Uri> images;
+    private String title;
+    private String description;
+    private ArrayList<String> imagePaths; // internal file paths
 
-    public Trip(String title, String description, ArrayList<Uri> images) {
+    public Trip(String title, String description, ArrayList<String> imagePaths) {
         this.title = title;
         this.description = description;
-        this.images = images;
+        this.imagePaths = imagePaths;
     }
 
     public String getTitle() {
@@ -24,7 +23,7 @@ public class Trip implements Serializable {
         return description;
     }
 
-    public ArrayList<Uri> getImages() {
-        return images;
+    public ArrayList<String> getImagePaths() {
+        return imagePaths;
     }
 }

@@ -1,7 +1,5 @@
 package com.example.traveldiaries.adapter;
 
-import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,42 +11,31 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.traveldiaries.R;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class ImageSliderAdapter
         extends RecyclerView.Adapter<ImageSliderAdapter.ViewHolder> {
 
-    private final ArrayList<Uri> images;
-    private Context context;
+    ArrayList<String> images;
 
-    public ImageSliderAdapter(ArrayList<Uri> images) {
+    public ImageSliderAdapter(ArrayList<String> images) {
         this.images = images;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(
-            @NonNull ViewGroup parent, int viewType) {
-
-        context = parent.getContext();
-
-        View view = LayoutInflater.from(context)
-                .inflate(R.layout.item_image_slider, parent, false);
-
-        return new ViewHolder(view);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ViewHolder(
+                LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_image_slider, parent, false)
+        );
     }
 
     @Override
-    public void onBindViewHolder(
-            @NonNull ViewHolder holder, int position) {
-
-        Uri uri = images.get(position);
-
-        // ✅ SAFE IMAGE LOADING (NO PERMISSION CRASH)
-        Glide.with(context)
-                .load(uri)
-                .placeholder(R.drawable.bg_card)
-                .error(R.drawable.bg_card)
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Glide.with(holder.imageView.getContext())
+                .load(new File(images.get(position)))
                 .into(holder.imageView);
     }
 

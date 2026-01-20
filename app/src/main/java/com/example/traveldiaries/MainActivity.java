@@ -1,8 +1,8 @@
 package com.example.traveldiaries;
-import android.net.Uri;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,16 +11,20 @@ import com.example.traveldiaries.adapter.TripAdapter;
 import com.example.traveldiaries.model.Trip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     FloatingActionButton addTripFab;
-    ArrayList<Trip> tripList;
+    ArrayList<Trip> tripList = new ArrayList<>();
     TripAdapter adapter;
-
-    public static final int ADD_TRIP_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,40 +34,86 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.tripsRecyclerView);
         addTripFab = findViewById(R.id.addTripFab);
 
-        tripList = new ArrayList<>();
-        adapter = new TripAdapter(this, tripList);
+        loadTripsFromFile();
 
+        adapter = new TripAdapter(this, tripList);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(adapter);
 
-        addTripFab.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AddTripActivity.class);
-            startActivityForResult(intent, ADD_TRIP_REQUEST);
-        });
+        addTripFab.setOnClickListener(v ->
+                startActivityForResult(
+                        new Intent(this, AddTripActivity.class), 1
+                )
+        );
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == ADD_TRIP_REQUEST && resultCode == RESULT_OK && data != null) {
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
 
             String title = data.getStringExtra("title");
-            String description = data.getStringExtra("description");
+            String desc = data.getStringExtra("description");
+            ArrayList<String> images = data.getStringArrayListExtra("images");
 
-            ArrayList<String> imageStrings =
-                    data.getStringArrayListExtra("images");
+            tripList.add(new Trip(title, desc, images));
+            adapter.notifyItemInserted(tripList.size() - 1);
+            saveTripsToFile();
+        }
+    }
 
-            ArrayList<Uri> imageUris = new ArrayList<>();
-            if (imageStrings != null) {
-                for (String s : imageStrings) {
-                    imageUris.add(Uri.parse(s));
-                }
+    private void saveTripsToFile() {
+        try {
+            JSONArray array = new JSONArray();
+            for (Trip t : tripList) {
+                JSONObject obj = new JSONObject();
+                obj.put("title", t.getTitle());
+                obj.put("description", t.getDescription());
+                obj.put("images", new JSONArray(t.getImagePaths()));
+                array.put(obj);
             }
 
-            Trip trip = new Trip(title, description, imageUris);
-            tripList.add(trip);
-            adapter.notifyItemInserted(tripList.size() - 1);
+            FileOutputStream fos = openFileOutput("trips.json", MODE_PRIVATE);
+            fos.write(array.toString().getBytes());
+            fos.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadTripsFromFile() {
+        try {
+            File file = new File(getFilesDir(), "trips.json");
+            if (!file.exists()) return;
+
+            FileInputStream fis = openFileInput("trips.json");
+            byte[] data = new byte[fis.available()];
+            fis.read(data);
+            fis.close();
+
+            JSONArray array = new JSONArray(new String(data));
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject obj = array.getJSONObject(i);
+
+                ArrayList<String> imgs = new ArrayList<>();
+                JSONArray imgArr = obj.getJSONArray("images");
+                for (int j = 0; j < imgArr.length(); j++) {
+                    imgs.add(imgArr.getString(j));
+                }
+
+                tripList.add(
+                        new Trip(
+                                obj.getString("title"),
+                                obj.getString("description"),
+                                imgs
+                        )
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
