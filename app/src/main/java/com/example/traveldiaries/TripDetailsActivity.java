@@ -19,6 +19,7 @@ public class TripDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_trip_details);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar.setTitle("TravelDiaries");
         toolbar.setNavigationOnClickListener(v -> finish());
 
         TextView title = findViewById(R.id.tripTitleText);
