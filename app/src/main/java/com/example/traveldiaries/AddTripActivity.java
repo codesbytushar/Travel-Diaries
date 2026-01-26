@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.traveldiaries.adapter.SelectedImageAdapter;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,6 +36,11 @@ public class AddTripActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_trip);
+
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar.setTitle("TravelDiaries");
+        toolbar.setNavigationOnClickListener(v -> finish());
+
 
         titleEdt = findViewById(R.id.tripTitle);
         descEdt = findViewById(R.id.tripDesc);
