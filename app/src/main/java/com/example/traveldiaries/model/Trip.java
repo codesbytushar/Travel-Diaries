@@ -1,18 +1,17 @@
 package com.example.traveldiaries.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Trip implements Serializable {
+public class Trip {
 
-    private String title;
-    private String description;
-    private ArrayList<String> imagePaths;
+    private final String title;
+    private final String description;
+    private final ArrayList<String> imageUris;
 
-    public Trip(String title, String description, ArrayList<String> imagePaths) {
+    public Trip(String title, String description, ArrayList<String> imageUris) {
         this.title = title;
         this.description = description;
-        this.imagePaths = imagePaths;
+        this.imageUris = imageUris;
     }
 
     public String getTitle() {
@@ -23,7 +22,7 @@ public class Trip implements Serializable {
         return description;
     }
 
-    public ArrayList<String> getImagePaths() {
-        return imagePaths;
+    public ArrayList<String> getImageUris() {
+        return imageUris;
     }
 }
