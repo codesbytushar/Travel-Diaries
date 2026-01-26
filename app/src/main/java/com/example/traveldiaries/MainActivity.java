@@ -22,34 +22,55 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    RecyclerView recyclerView;
-    FloatingActionButton addTripFab;
-    ArrayList<Trip> tripList = new ArrayList<>();
-    TripAdapter adapter;
+    private RecyclerView recyclerView;
+    private FloatingActionButton addTripFab;
+
+    private final ArrayList<Trip> tripList = new ArrayList<>();
+    private TripAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Toolbar
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         setSupportActionBar(toolbar);
 
+        // Views
         recyclerView = findViewById(R.id.tripsRecyclerView);
         addTripFab = findViewById(R.id.addTripFab);
 
+        // Load saved trips
         loadTripsFromFile();
 
-        adapter = new TripAdapter(this, tripList, position -> deleteTrip(position));
+        // RecyclerView + Adapter
+        adapter = new TripAdapter(this, tripList, new TripAdapter.OnTripClickListener() {
+            @Override
+            public void onTripClick(Trip trip) {
+                Intent intent = new Intent(MainActivity.this, TripDetailsActivity.class);
+                intent.putExtra("title", trip.getTitle());
+                intent.putExtra("description", trip.getDescription());
+                intent.putStringArrayListExtra("images", trip.getImageUris());
+                startActivity(intent);
+            }
+
+            @Override
+            public void onTripDelete(int position) {
+                deleteTrip(position);
+            }
+        });
+
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(adapter);
 
+        // Add new trip
         addTripFab.setOnClickListener(v ->
                 startActivityForResult(
-                        new Intent(this, AddTripActivity.class), 1
+                        new Intent(this, AddTripActivity.class),
+                        1
                 )
         );
-
     }
 
     @Override
@@ -59,23 +80,26 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
 
             String title = data.getStringExtra("title");
-            String desc = data.getStringExtra("description");
+            String description = data.getStringExtra("description");
             ArrayList<String> images = data.getStringArrayListExtra("images");
 
-            tripList.add(new Trip(title, desc, images));
+            tripList.add(new Trip(title, description, images));
             adapter.notifyItemInserted(tripList.size() - 1);
+
             saveTripsToFile();
         }
     }
 
+    // 💾 Save trips to internal storage (JSON)
     private void saveTripsToFile() {
         try {
             JSONArray array = new JSONArray();
+
             for (Trip t : tripList) {
                 JSONObject obj = new JSONObject();
                 obj.put("title", t.getTitle());
                 obj.put("description", t.getDescription());
-                obj.put("images", new JSONArray(t.getImagePaths()));
+                obj.put("images", new JSONArray(t.getImageUris()));
                 array.put(obj);
             }
 
@@ -88,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // 📂 Load trips from internal storage
     private void loadTripsFromFile() {
         try {
             File file = new File(getFilesDir(), "trips.json");
@@ -99,20 +124,21 @@ public class MainActivity extends AppCompatActivity {
             fis.close();
 
             JSONArray array = new JSONArray(new String(data));
+
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
 
-                ArrayList<String> imgs = new ArrayList<>();
+                ArrayList<String> images = new ArrayList<>();
                 JSONArray imgArr = obj.getJSONArray("images");
                 for (int j = 0; j < imgArr.length(); j++) {
-                    imgs.add(imgArr.getString(j));
+                    images.add(imgArr.getString(j));
                 }
 
                 tripList.add(
                         new Trip(
                                 obj.getString("title"),
                                 obj.getString("description"),
-                                imgs
+                                images
                         )
                 );
             }
@@ -121,23 +147,14 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    // 🗑️ Delete trip (SAFE for any position)
     private void deleteTrip(int position) {
-        try {
-            Trip trip = tripList.get(position);
+        if (position < 0 || position >= tripList.size()) return;
 
-            for (String path : trip.getImagePaths()) {
-                File file = new File(path);
-                if (file.exists()) file.delete();
-            }
+        tripList.remove(position);
+        adapter.notifyItemRemoved(position);
 
-            tripList.remove(position);
-            adapter.notifyItemRemoved(position);
-
-            saveTripsToFile();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        saveTripsToFile();
     }
-
 }
