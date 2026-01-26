@@ -1,103 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
-    android:fillViewport="true">
+    android:background="#F5F5F5">
 
-    <LinearLayout
+    <!-- 🔝 Top App Bar with Back Button -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:gravity="center_horizontal">
+        android:title="Add New Trip"
+        android:background="?attr/colorPrimary"
+        android:titleTextColor="@android:color/white"
+        app:navigationIcon="@drawable/ic_back"
+        app:elevation="4dp" />
+
+    <!-- Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="#F5F5F5"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp"
-            android:background="@drawable/bg_form_card">
+            android:padding="16dp"
+            android:gravity="center_horizontal">
 
-            <TextView
+            <!-- FORM CARD -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add New Trip"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="#212121" />
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="@drawable/bg_form_card">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="16dp" />
+                <!-- Trip Title -->
+                <EditText
+                    android:id="@+id/tripTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/trip_title"
+                    android:inputType="text"
+                    android:minHeight="48dp"
+                    android:padding="12dp"
+                    android:background="@drawable/bg_input"
+                    android:autofillHints="name"
+                    android:textColor="@color/text_black"
+                    android:textColorHint="@color/text_hint"/>
 
-            <EditText
-                android:id="@+id/tripTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/trip_title"
-                android:inputType="text"
-                android:minHeight="48dp"
-                android:padding="12dp"
-                android:background="@drawable/bg_input"
-                android:autofillHints="name"
-                android:textColor="@color/text_black"
-                android:textColorHint="@color/text_hint"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="12dp" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="12dp" />
+                <!-- Trip Description -->
+                <EditText
+                    android:id="@+id/tripDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/about_trip"
+                    android:inputType="textMultiLine"
+                    android:minLines="4"
+                    android:padding="12dp"
+                    android:background="@drawable/bg_input"
+                    android:autofillHints="none"
+                    android:textColor="@color/text_black"
+                    android:textColorHint="@color/text_hint"/>
 
-            <EditText
-                android:id="@+id/tripDesc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/about_trip"
-                android:inputType="textMultiLine"
-                android:minLines="4"
-                android:padding="12dp"
-                android:background="@drawable/bg_input"
-                android:autofillHints="none"
-                android:textColor="@color/text_black"
-                android:textColorHint="@color/text_hint"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="20dp" />
+                <!-- Select Photos -->
+                <Button
+                    android:id="@+id/selectPhotosBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/select_photos"
+                    android:minHeight="48dp"
+                    android:backgroundTint="#E0E0E0"
+                    android:textColor="#000000" />
 
-            <Button
-                android:id="@+id/selectPhotosBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/select_photos"
-                android:minHeight="48dp"
-                android:backgroundTint="#E0E0E0"
-                android:textColor="#000000" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="12dp" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="12dp" />
+                <!-- Selected Images -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/selectedImagesRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/selectedImagesRecycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="20dp" />
+                <!-- Save Trip -->
+                <Button
+                    android:id="@+id/saveTripBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/save_trip"
+                    android:minHeight="48dp"
+                    android:backgroundTint="#1976D2"
+                    android:textColor="#FFFFFF" />
 
-            <Button
-                android:id="@+id/saveTripBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/save_trip"
-                android:minHeight="48dp"
-                android:backgroundTint="#1976D2"
-                android:textColor="#FFFFFF" />
+            </LinearLayout>
 
         </LinearLayout>
+    </ScrollView>
 
-    </LinearLayout>
-</ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
