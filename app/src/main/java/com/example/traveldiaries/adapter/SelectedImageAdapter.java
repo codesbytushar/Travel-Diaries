@@ -34,9 +34,11 @@ public class SelectedImageAdapter extends RecyclerView.Adapter<SelectedImageAdap
         holder.imageView.setImageURI(images.get(position));
 
         holder.removeBtn.setOnClickListener(v -> {
-            images.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, images.size());
+            int pos = holder.getAdapterPosition();
+            if (pos != RecyclerView.NO_POSITION) {
+                images.remove(pos);
+                notifyItemRemoved(pos);
+            }
         });
     }
 
