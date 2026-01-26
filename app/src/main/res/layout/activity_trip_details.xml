@@ -6,20 +6,23 @@
     android:layout_height="match_parent"
     android:background="#F5F5F5">
 
+    <!-- 🔝 Title Bar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:title="Trip Details"
+        android:title="TravelDiaries"
         android:background="?attr/colorPrimary"
         android:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/ic_back"
-        app:layout_scrollFlags="scroll|enterAlways"/>
+        app:elevation="4dp" />
 
+    <!-- Content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_marginTop="?attr/actionBarSize"
+        android:fillViewport="true">
 
         <LinearLayout
             android:orientation="vertical"
@@ -27,9 +30,11 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
+            <!-- 📸 Image Slider Card (slightly down) -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
+                android:layout_marginTop="8dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="6dp">
 
@@ -43,12 +48,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="16dp" />
 
+            <!-- 📝 Trip Details Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/white">
+                app:cardBackgroundColor="@android:color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -62,11 +68,11 @@
                         android:layout_height="wrap_content"
                         android:textSize="22sp"
                         android:textStyle="bold"
-                        android:textColor="@color/text_black"/>
+                        android:textColor="#212121" />
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="12dp"/>
+                        android:layout_height="12dp" />
 
                     <TextView
                         android:id="@+id/tripDescText"
@@ -74,11 +80,10 @@
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
                         android:lineSpacingExtra="6dp"
-                        android:textColor="@color/text_black"/>
+                        android:textColor="#444444" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
 
         </LinearLayout>
     </ScrollView>
